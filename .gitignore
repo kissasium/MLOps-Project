@@ -1,5 +1,5 @@
-/venv
-/client_secret.json
+course-project-kissasium/venv
+course-project-kissasium/client_secret.json
 .env
 
 __pycache__/
