@@ -3,7 +3,7 @@ import pandas as pd
 # Load the weather and air quality data
 weather_file = "data\weather_data.csv"
 air_quality_file = "data\air_quality_data.csv"
-output_file = "data\merged_weather_air_quality.csv"
+output_file = "data\merged_output.csv"
 
 # Read the CSV files
 weather_df = pd.read_csv(weather_file)

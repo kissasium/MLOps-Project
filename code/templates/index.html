@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AQI Prediction</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            background-color: #f4f4f4;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        #predictButton {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 20px 0;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        #predictionResults {
+            margin-top: 20px;
+        }
+        canvas {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AQI Prediction using ARIMA Model</h1>
+        
+        <p>This model uses the ARIMA (2,1,1) approach to forecast Air Quality Index (AQI) for the next 5 days.</p>
+        
+        <p>Model Performance:
+            <ul>
+                <li>RMSE: 0.42</li>
+                <li>MAE: 0.36</li>
+                <li>Accuracy: 75.49%</li>
+            </ul>
+        </p>
+
+        <button id="predictButton">Predict Next 5 Days AQI</button>
+
+        <div id="predictionResults">
+            <h2>Predictions</h2>
+            <canvas id="predictionChart"></canvas>
+            <p id="predictionText"></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('predictButton').addEventListener('click', function() {
+            fetch('/predict', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const predictions = data.predictions;
+                        displayPredictions(predictions);
+                    } else {
+                        alert('Error in prediction: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+
+        function displayPredictions(predictions) {
+            // Text representation
+            const predictionText = predictions.map((pred, index) => 
+                `Day ${index + 1}: ${pred.toFixed(2)}`
+            ).join('<br>');
+            document.getElementById('predictionText').innerHTML = predictionText;
+
+            // Chart representation
+            const ctx = document.getElementById('predictionChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5'],
+                    datasets: [{
+                        label: 'Predicted AQI',
+                        data: predictions,
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Air Quality Index (AQI)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+
