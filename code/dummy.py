@@ -88,19 +88,116 @@
 #         time.sleep(sleeping_time)  # Wait for 5 minutes before fetching the data again
 
 
+# import pandas as pd
+# import numpy as np
+# from statsmodels.tsa.arima.model import ARIMA
+# import joblib
+
+# # Example data loading - adjust to your dataset
+# data = pd.read_csv('data/merged_output.csv')  # Load your time series data
+# data['Date'] = pd.to_datetime(data['Date'])  # Convert to datetime
+# data.set_index('Date', inplace=True)
+
+# # Fit ARIMA model (2, 1, 1)
+# model = ARIMA(data['value'], order=(2, 1, 1))  # Replace 'value' with your column name
+# model_fit = model.fit()
+
+# # Save the trained model
+# joblib.dump(model_fit, 'arima_model.pkl')
+
 import pandas as pd
 import numpy as np
+from sklearn.metrics import mean_squared_error, mean_absolute_error
+import matplotlib.pyplot as plt
+import mlflow
 from statsmodels.tsa.arima.model import ARIMA
-import joblib
+import logging
+import os
 
-# Example data loading - adjust to your dataset
-data = pd.read_csv('data/merged_output.csv')  # Load your time series data
-data['Date'] = pd.to_datetime(data['Date'])  # Convert to datetime
-data.set_index('Date', inplace=True)
+# Set up a logging file
+log_file = "custom_logs.txt"
+if os.path.exists(log_file):
+    os.remove(log_file)  # Remove existing log file
+logging.basicConfig(filename=log_file, level=logging.INFO, format='%(asctime)s - %(message)s')
+logging.info("Starting Pollution Prediction Experiment")
 
-# Fit ARIMA model (2, 1, 1)
-model = ARIMA(data['value'], order=(2, 1, 1))  # Replace 'value' with your column name
-model_fit = model.fit()
+# Load the dataset
+df = pd.read_csv('data/merged_output.csv', parse_dates=['timestamp'])
+df['timestamp'] = pd.to_datetime(df['timestamp'])
+df.set_index('timestamp', inplace=True)
 
-# Save the trained model
-joblib.dump(model_fit, 'arima_model.pkl')
+# Convert AQI to the target variable for prediction
+aqi = df['aqi']
+
+# Split the data into training and testing sets (80:20 ratio)
+train_size = int(len(aqi) * 0.8)
+train, test = aqi[:train_size], aqi[train_size:]
+
+# Define a function for calculating accuracy (percentage error)
+def calculate_accuracy(y_true, y_pred):
+    error = np.abs(y_true - y_pred) / y_true
+    accuracy = 100 - np.mean(error) * 100
+    return accuracy
+
+# ---- ARIMA Model ----
+mlflow.set_experiment('Pollution Prediction - ARIMA')
+
+def arima_model(train, test, p, d, q):
+    model = ARIMA(train, order=(p, d, q))
+    model_fit = model.fit()
+    forecast = model_fit.forecast(steps=len(test))
+    
+    rmse = np.sqrt(mean_squared_error(test, forecast))
+    mae = mean_absolute_error(test, forecast)
+    accuracy = calculate_accuracy(test, forecast)
+    return forecast, rmse, mae, accuracy, model_fit
+
+# Hyperparameter tuning for ARIMA
+best_rmse_arima = float('inf')
+best_model_arima = None
+best_forecast_arima = None
+
+for p in range(1, 4):
+    for d in range(1, 2):
+        for q in range(1, 4):
+            with mlflow.start_run():
+                forecast, rmse, mae, accuracy, model_fit = arima_model(train, test, p, d, q)
+                
+                # Log parameters and metrics
+                mlflow.log_param("p", p)
+                mlflow.log_param("d", d)
+                mlflow.log_param("q", q)
+                mlflow.log_metric("RMSE", rmse)
+                mlflow.log_metric("MAE", mae)
+                mlflow.log_metric("Accuracy", accuracy)
+                
+                # Log to the custom log file
+                msg = (f"ARIMA({p},{d},{q}) - RMSE: {rmse:.2f}, MAE: {mae:.2f}, Accuracy: {accuracy:.2f}%")
+                logging.info(msg)
+                print(msg)
+
+                # Save ARIMA model summary as a text artifact
+                with open("arima_summary.txt", "w") as f:
+                    f.write(str(model_fit.summary()))
+                mlflow.log_artifact("arima_summary.txt")
+                
+                if rmse < best_rmse_arima:
+                    best_rmse_arima = rmse
+                    best_model_arima = (p, d, q)
+                    best_forecast_arima = forecast
+
+logging.info(f"Best ARIMA Model: {best_model_arima} with RMSE: {best_rmse_arima:.2f}")
+print("\nBest ARIMA Model:", best_model_arima)
+print(f"Best RMSE: {best_rmse_arima:.2f}")
+
+# ---- Visualization ----
+plt.figure(figsize=(10, 6))
+plt.plot(test.index, test, label='Actual AQI', color='blue')
+plt.plot(test.index, best_forecast_arima, label='Forecasted AQI (ARIMA)', color='red')
+plt.title('ARIMA Model Forecast vs Actual AQI')
+plt.xlabel('Date')
+plt.ylabel('AQI')
+plt.legend()
+plt.savefig("arima_results.png")
+mlflow.log_artifact("arima_results.png")
+plt.show()

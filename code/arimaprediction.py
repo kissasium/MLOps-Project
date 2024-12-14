@@ -47,8 +47,8 @@ best_accuracy = None
 best_params = None
 
 for p in range(1, 4):  # Example: p = 1, 2, 3
-    for d in range(1, 2):  # d = 1 (differencing)
-        for q in range(1, 4):  # Example: q = 1, 2, 3
+    for d in range(1, 2):  
+        for q in range(1, 4):  
             forecast, rmse, mae, accuracy = arima_model(train, test, p, d, q)
             print(f"ARIMA({p},{d},{q}) - RMSE: {rmse:.2f}, MAE: {mae:.2f}, Accuracy: {accuracy:.2f}%")
 

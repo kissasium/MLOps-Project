@@ -157,8 +157,6 @@
 # plt.show()
 
 
-
-
 import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestRegressor
@@ -177,7 +175,7 @@ df.set_index('timestamp', inplace=True)
 aqi = df['aqi']
 
 # Feature engineering for Random Forest: Use previous AQI values as features
-df['prev_aqi'] = df['aqi'].shift(1)  # 1-day lag as feature
+df['prev_aqi'] = df['aqi'].shift(1)  #
 df.dropna(inplace=True)  # Drop rows with NaN values due to shifting
 X = df[['prev_aqi']]  # You can add more features here if needed
 y = df['aqi']
@@ -217,9 +215,9 @@ best_rmse_rf = float('inf')
 best_model_rf = None
 best_y_pred_rf = None
 
-for n_estimators in [50, 100, 150]:  # Example values for n_estimators
-    for max_depth in [5, 10, 15]:  # Example values for max_depth
-        with mlflow.start_run():  # Start logging for this run
+for n_estimators in [50, 100, 150]: 
+    for max_depth in [5, 10, 15]: 
+        with mlflow.start_run():  
             y_pred, rmse, mae, accuracy = random_forest_model(X_train, y_train, X_test, y_test, n_estimators, max_depth)
             
             # Log parameters and metrics
