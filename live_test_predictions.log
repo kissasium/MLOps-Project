@@ -30,3 +30,21 @@ Freq: D, Name: predicted_mean, dtype: float64
 2024-12-15 17:10:07,442:INFO:Mean Absolute Error: 0.7594982074755929
 2024-12-15 17:10:07,442:INFO:Accuracy: 37.57593239450626%
 2024-12-15 17:10:07,443:INFO:Sleeping for 5 minutes
+2024-12-15 19:53:28,629:INFO:Data saved successfully to data/weather_data.csv
+2024-12-15 19:53:29,001:INFO:Data saved successfully to data/air_quality_data.csv
+2024-12-15 19:53:29,035:INFO:Merged data saved to data/merged_output.csv
+2024-12-15 19:53:29,580:INFO:Best ARIMA model order: (2, 1, 1)
+2024-12-15 19:53:29,581:INFO:Predictions: 34    1.299676
+35    1.139056
+36    0.987275
+37    1.196120
+38    1.204660
+39    1.034311
+40    1.118836
+41    1.208748
+42    1.093464
+Name: predicted_mean, dtype: float64
+2024-12-15 19:53:29,581:INFO:Mean Squared Error: 0.028584866581377797
+2024-12-15 19:53:29,581:INFO:Mean Absolute Error: 0.1452884905852895
+2024-12-15 19:53:29,581:INFO:Accuracy: 83.09294035576328%
+2024-12-15 19:53:29,582:INFO:Sleeping for 5 minutes

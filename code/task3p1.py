@@ -14,7 +14,7 @@ def data_ingestion():
     # Load your data
     df = pd.read_csv('data/merged_output.csv', parse_dates=['timestamp'])
     # Perform data processing or merging if required
-    return dfs
+    return df
 
 # Simulated ARIMA prediction function
 def arima_prediction(df):
