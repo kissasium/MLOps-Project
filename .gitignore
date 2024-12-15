@@ -1,7 +1,8 @@
 venv/
 mlruns/
 .env
-
+client_secrets/
 __pycache__/
+
 *.pyc
 *.pyo

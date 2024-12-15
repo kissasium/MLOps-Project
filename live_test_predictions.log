@@ -1,0 +1,32 @@
+2024-12-15 17:01:08,079:INFO:Data saved successfully to data/weather_data.csv
+2024-12-15 17:01:08,433:INFO:Data saved successfully to data/air_quality_data.csv
+2024-12-15 17:01:08,454:INFO:Merged data saved to data/merged_output.csv
+2024-12-15 17:01:09,360:INFO:Best ARIMA model order: (2, 1, 1)
+2024-12-15 17:01:09,361:INFO:Predictions: 2024-12-09    2.311602
+2024-12-10    0.971230
+2024-12-11    2.382664
+2024-12-12    2.708692
+2024-12-13    1.273765
+2024-12-14    1.851985
+2024-12-15    2.762864
+Freq: D, Name: predicted_mean, dtype: float64
+2024-12-15 17:01:09,361:INFO:Mean Squared Error: 0.605389888648135
+2024-12-15 17:01:09,366:INFO:Mean Absolute Error: 0.5575652879030177
+2024-12-15 17:01:09,366:INFO:Accuracy: 50.48657870926373%
+2024-12-15 17:01:09,366:INFO:Sleeping for 5 minutes
+2024-12-15 17:10:06,458:INFO:Data saved successfully to data/weather_data.csv
+2024-12-15 17:10:06,852:INFO:Data saved successfully to data/air_quality_data.csv
+2024-12-15 17:10:06,883:INFO:Merged data saved to data/merged_output.csv
+2024-12-15 17:10:07,441:INFO:Best ARIMA model order: (2, 1, 1)
+2024-12-15 17:10:07,442:INFO:Predictions: 2024-12-11    2.640907
+2024-12-12    2.497024
+2024-12-13    1.148307
+2024-12-14    2.113067
+2024-12-15    2.695258
+2024-12-16    1.487672
+2024-12-17    1.728301
+Freq: D, Name: predicted_mean, dtype: float64
+2024-12-15 17:10:07,442:INFO:Mean Squared Error: 0.7952580033500516
+2024-12-15 17:10:07,442:INFO:Mean Absolute Error: 0.7594982074755929
+2024-12-15 17:10:07,442:INFO:Accuracy: 37.57593239450626%
+2024-12-15 17:10:07,443:INFO:Sleeping for 5 minutes
