@@ -2,3 +2,5 @@
 # fall24_mlops_project
 
 For Project Description, click [here](mlops_project_description.pdf).
+
+All the Project documentation is done [here](i210572_MLOps_project_Report.pdf).
